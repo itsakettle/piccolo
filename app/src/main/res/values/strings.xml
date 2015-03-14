@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Piccolo</string>
+    <string name="title_section1">Screen Log</string>
+    <string name="title_section2">Daily Graphs</string>
+    <string name="title_section3">empty</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
+    <string name="screen_log_menu_title">Screen Logging</string>
+    <string name="database_export_menu_title">Database export</string>
+    <string name="database_import_menu_title">Database import</string>
+    <string name = "screenlog_notification_id">926</string>
+
+</resources>

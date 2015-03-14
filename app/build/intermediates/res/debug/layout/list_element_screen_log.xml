@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- row.xml -->
+<LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:paddingTop="4dp"
+     android:paddingBottom="6dp"
+     android:layout_width="fill_parent"
+     android:layout_height="?android:attr/listPreferredItemHeight"
+     android:orientation="horizontal" >
+ 
+    	 <TextView android:id="@+id/leScreenLogID"
+         android:layout_width="5dp"
+         android:layout_height="fill_parent" 
+         android:layout_weight="10"
+         android:gravity="center"
+         android:textColor="#808080"
+         />
+ 
+     	<TextView android:id="@+id/leScreenLogOn"
+         android:layout_width="5dp"
+         android:layout_height="fill_parent"
+         android:layout_weight="30"
+         android:gravity="center"
+         android:textColor="#808080"
+        />
+         
+         <TextView android:id="@+id/leScreenLogOff"
+         android:layout_width="5dp"
+         android:layout_height="fill_parent" 
+         android:layout_weight="30"
+         android:gravity="center"
+         android:textColor="#808080"
+         />
+
+        <TextView android:id="@+id/leScreenDelta"
+        android:layout_width="5dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:textColor="#808080"
+        />
+
+        <TextView android:id="@+id/leScreenDay"
+        android:layout_width="5dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="30"
+        android:gravity="center"
+        android:textColor="#808080"
+        />
+
+        <TextView android:id="@+id/leScreenHour"
+        android:layout_width="5dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="10"
+        android:gravity="center"
+        android:textColor="#808080"
+        />
+
+</LinearLayout><!-- From: file:/home/wtr/Dropbox/itsakettle/Piccolo/app/src/main/res/layout/list_element_screen_log.xml -->

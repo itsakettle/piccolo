@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingTop="4dp"
+    android:paddingBottom="6dp"
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:orientation="horizontal">
+
+    <TextView android:id="@+id/dgleDate"
+        android:layout_width="5dp"
+    android:layout_height="fill_parent"
+    android:layout_weight="3"
+    android:gravity="center"
+    android:textColor="#808080"
+    android:textSize="12dp"
+    android:text ="2015-01-01"
+    />
+
+    <ImageView
+        android:id= "@+id/leivGraph"
+        android:layout_width="5dp"
+        android:layout_height="fill_parent"
+        android:paddingLeft="3dip"
+        android:paddingRight="3dip"
+        android:layout_weight="15"
+        />
+
+</LinearLayout><!-- From: file:/home/wtr/Dropbox/itsakettle/Piccolo/app/src/main/res/layout/list_element_daily_graph.xml -->

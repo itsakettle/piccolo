@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".PiccoloMain" >
+
+    <item
+        android:id="@+id/ScreenLogMenuItem"
+        android:showAsAction="never"
+        android:title="@string/screen_log_menu_title"
+        />
+
+    <item
+        android:id="@+id/DatabaseExportMenuItem"
+        android:showAsAction="never"
+        android:title="@string/database_export_menu_title"
+        />
+
+    <item
+        android:id="@+id/DatabaseImportMenuItem"
+        android:showAsAction="never"
+        android:title="@string/database_import_menu_title"
+        />
+</menu>
+<!-- From: file:/home/wtr/Dropbox/itsakettle/Piccolo/app/src/main/res/menu/piccolo_main.xml -->
