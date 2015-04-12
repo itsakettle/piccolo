@@ -2,4 +2,32 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+
+        <CheckBoxPreference
+            android:key="pref_key_foreground_service"
+            android:disableDependentsState="true"
+            android:title="@string/pref_foreground_service_title"
+            android:summary="@string/pref_foreground_service_summary" />
+
+    <PreferenceCategory
+        android:title = "@string/pref_notification_group_title"
+        android:key = "pref_key_notifications_group" >
+
+        <ListPreference
+            android:key="pref_key_notification_type"
+            android:title="@string/pref_notification_content_title"
+            android:dialogTitle="@string/pref_notification_content_dialog_title"
+            android:entries="@array/pref_notifications_content_entries"
+            android:entryValues="@array/pref_notifications_content_entry_values"
+            android:defaultValue="@string/pref_notification_content_default" />
+
+        <ListPreference
+            android:dependency="pref_key_foreground_service"
+            android:key="pref_key_notification_schedule"
+            android:title="@string/pref_notification_schedule_title"
+            android:dialogTitle="" />
+
+
+
+    </PreferenceCategory>
 </PreferenceScreen>
