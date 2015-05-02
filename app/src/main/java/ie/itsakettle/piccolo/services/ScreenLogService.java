@@ -258,8 +258,7 @@ public class ScreenLogService extends Service {
         // broadcasts
         this.registerReceiver(rec, intentFilter);
         
-        prefs =  PreferenceManager.getDefaultSharedPreferences(this);
-        Log.i("ScreenLog Service", "Shared preference created: " + prefs.contains("ie.itsakettle.remedy.screen_log"));
+
 		
 	}
 
@@ -308,7 +307,6 @@ public class ScreenLogService extends Service {
        {
     	   Log.i("ScreenLog Service", "Attempting to put service into foreground.");
         startForeground(notifID,n);
-           prefs.edit().putBoolean("ie.itsakettle.piccolo.screen_log", true).commit();
         
        }
        catch(Exception e)
@@ -338,7 +336,6 @@ public class ScreenLogService extends Service {
 		Log.i("ScreenLog Service", "Destroyed");
 		this.unregisterReceiver(rec);
 		mAlarmManager.cancel(mPendingIntent);
-		prefs.edit().putBoolean("ie.itsakettle.remedy.screen_log", false).commit();
 		
 	}
 	

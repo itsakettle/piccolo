@@ -3,10 +3,11 @@ package ie.itsakettle.piccolo.activities;
 import android.app.Activity;
 
 import android.app.ActionBar;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -134,11 +135,31 @@ public class PiccoloMain extends Activity
         return super.onCreateOptionsMenu(menu);
     }
 
+    /*
+    I got this solution from http://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android
+     There is no consensus on this, so I'm going with this for now...the alternative is a shared pref like before or
+     a static flag in the service class..but these don't help if the service is destroyed as onDestroy isn't
+     guaranteed to be called.....I think.
+     */
+
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public boolean onPrepareOptionsMenu (Menu menu)
     {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            if (prefs.getBoolean("ie.itsakettle.piccolo.screen_log", false)) {
+
+            //Check if the screen log service is running.
+
+            if ( isServiceRunning(ie.itsakettle.piccolo.services.ScreenLogService.class)  ) {
                 menu.findItem(R.id.ScreenLogMenuItem).setTitle("Turn screen log off");
             } else {
                 menu.findItem(R.id.ScreenLogMenuItem).setTitle("Turn screen log on");
@@ -214,9 +235,8 @@ public class PiccoloMain extends Activity
 
     private boolean activateScreenLog()
     {
-        Log.i("MainFragmentActivity", "activate screen log shared pref: " + prefs.getBoolean("ie.itsakettle.piccolo.screen_log", false));
-
-        if(!prefs.getBoolean("ie.itsakettle.piccolo.screen_log", false))
+        boolean screenLogActive = isServiceRunning(ie.itsakettle.piccolo.services.ScreenLogService.class);
+        if(!screenLogActive )
         {
             Intent i = new Intent(this,ScreenLogService.class);
             this.startService(i);
@@ -228,8 +248,6 @@ public class PiccoloMain extends Activity
         {
             Intent i = new Intent(this,ScreenLogService.class);
             boolean b = this.stopService(i);
-
-            prefs.edit().putBoolean("ie.itsakettle.piccolo.screen_log", false).commit();
             invalidateOptionsMenu();
             return false;
         }
