@@ -21,11 +21,13 @@
             android:entryValues="@array/pref_notifications_content_entry_values"
             android:defaultValue="@string/pref_notification_content_default" />
 
-        <ListPreference
+        <ie.itsakettle.piccolo.Settings.SettingsTimeDialog
             android:dependency="pref_key_foreground_service"
             android:key="pref_key_notification_schedule"
             android:title="@string/pref_notification_schedule_title"
-            android:dialogTitle="" />
+            android:dialogTitle="@string/pref_notification_schedule_title"
+            android:dialogMessage="@string/pref_notification_schedule_message"
+            />
 
 
 

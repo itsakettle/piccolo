@@ -28,6 +28,7 @@ import ie.itsakettle.piccolo.contentprovider.DBHelper;
 import ie.itsakettle.piccolo.fragments.DailyGraphFragment;
 import ie.itsakettle.piccolo.fragments.NavigationDrawerFragment;
 import ie.itsakettle.piccolo.fragments.ScreenLogFragment;
+import ie.itsakettle.piccolo.fragments.SettingsFragment;
 import ie.itsakettle.piccolo.services.ScreenLogService;
 import ie.itsakettle.piccolo.utilities.DatabaseBackupFileNameFilter;
 import ie.itsakettle.piccolo.utilities.DatabaseExport;
@@ -183,7 +184,14 @@ public class PiccoloMain extends Activity
             }
 
         }
-
+        else if(item.getItemId() == R.id.action_settings)
+        {
+            //Start the settings fragment
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, new SettingsFragment())
+                    .commit();
+        }
 
 
         return super.onOptionsItemSelected(item);

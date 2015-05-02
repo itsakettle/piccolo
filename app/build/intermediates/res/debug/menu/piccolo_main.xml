@@ -19,5 +19,8 @@
         android:showAsAction="never"
         android:title="@string/database_import_menu_title"
         />
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:showAsAction="never" />
 </menu>
 <!-- From: file:/home/wtr/Dropbox/itsakettle/Piccolo/app/src/main/res/menu/piccolo_main.xml -->

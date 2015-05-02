@@ -46,7 +46,7 @@
     </string-array>
     <string name ="pref_notification_content_default">DAILY_GRAPH</string>
 
-    <string name ="pref_notification_schedule_title">Notification Times</string>
-    <string name ="pref_notification_schedule_title">Notification Times</string>
+    <string name ="pref_notification_schedule_title">Notification Time</string>
+    <string name = "pref_notification_schedule_message"> What time would you like Piccolo to notify you at?</string>
 
 </resources>
