@@ -4,7 +4,7 @@
     <string name="app_name">Piccolo</string>
     <string name="title_section1">Screen Log</string>
     <string name="title_section2">Daily Graphs</string>
-    <string name="title_section3">empty</string>
+    <string name="title_section3">Settings</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>

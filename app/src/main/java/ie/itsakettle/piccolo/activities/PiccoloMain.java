@@ -84,6 +84,9 @@ public class PiccoloMain extends Activity
             case 1:
                 f = new DailyGraphFragment();
                 break;
+            case 2:
+                f = new SettingsFragment();
+                break;
             default:
                 f = new ScreenLogFragment();
         }
@@ -184,15 +187,6 @@ public class PiccoloMain extends Activity
             }
 
         }
-        else if(item.getItemId() == R.id.action_settings)
-        {
-            //Start the settings fragment
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, new SettingsFragment())
-                    .commit();
-        }
-
 
         return super.onOptionsItemSelected(item);
 
