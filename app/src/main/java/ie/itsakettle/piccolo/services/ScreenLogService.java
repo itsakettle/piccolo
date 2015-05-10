@@ -35,21 +35,23 @@ import ie.itsakettle.piccolo.contentprovider.DatabaseAccessScreenLog;
 
 public class ScreenLogService extends Service {
 
-	private BroadcastReceiver rec;
-	SharedPreferences prefs;
+    private BroadcastReceiver rec;
+    SharedPreferences prefs;
     Uri onURI;
     String onHour;
     String onDate;
     Long onTime;
     TimeZone onTZ;
     private int notifID = R.string.screenlog_notification_id;
-    private static final String LOGCAT_ID =  "Screen Log Service";
+    private static final String LOGCAT_ID = "Screen Log Service";
     private static final String actionUpdateNotification = "it.itsakettle.piccolo.screenlogservice.updatenotification";
-    private NotificationCompat.Builder mBuilder ;
+    private static final String actionDisplayNotification = "it.itsakettle.piccolo.screenlogservice.displaynotification";
+    private NotificationCompat.Builder mBuilder;
     private NotificationManager mNotificationManager;
     private AlarmManager mAlarmManager;
     private PendingIntent mPendingIntent;
     private static final int iNotificationUpdateSeconds = 60;
+    private static final int iSecondsPerDay = 24*60*60;
 
     /**
      * This logs interaction turning on.
@@ -59,12 +61,11 @@ public class ScreenLogService extends Service {
      * @param hour - The hour of the on as a string
      * @return
      */
-	private void logOn(long time, String date, String hour, TimeZone tz)
-	{
+    private void logOn(long time, String date, String hour, TimeZone tz) {
 
-		ContentValues values = new ContentValues();
-		values.put(DatabaseAccessScreenLog.KEY_TIME_ON, time/1000);
-        values.put(DatabaseAccessScreenLog.KEY_DAY, date );
+        ContentValues values = new ContentValues();
+        values.put(DatabaseAccessScreenLog.KEY_TIME_ON, time / 1000);
+        values.put(DatabaseAccessScreenLog.KEY_DAY, date);
         values.put(DatabaseAccessScreenLog.KEY_HOUR, hour);
 
         onURI = this.getContentResolver().insert(DatabaseAccessScreenLog.CONTENT_URI, values);
@@ -81,16 +82,15 @@ public class ScreenLogService extends Service {
     /**
      * updates a record with an off
      *
-     * @param time  - The time to register the log off
+     * @param time   - The time to register the log off
      * @param record - The record to turn off.
      */
 
-    private void logOff(long time,Uri record)
-    {
+    private void logOff(long time, Uri record) {
         ContentValues values = new ContentValues();
-        values.put(DatabaseAccessScreenLog.KEY_TIME_OFF, time/1000);
-        values.put(DatabaseAccessScreenLog.KEY_DELTA, (time-onTime)/1000);
-        this.getContentResolver().update(record, values,null,null);
+        values.put(DatabaseAccessScreenLog.KEY_TIME_OFF, time / 1000);
+        values.put(DatabaseAccessScreenLog.KEY_DELTA, (time - onTime) / 1000);
+        this.getContentResolver().update(record, values, null, null);
         Log.i(LOGCAT_ID, "Off record inserted.");
     }
 
@@ -104,12 +104,10 @@ public class ScreenLogService extends Service {
      *
      * @param milliTime
      */
-    private void offLogic(long milliTime)
-    {
+    private void offLogic(long milliTime) {
 
 
-        if(onURI != null )
-        {
+        if (onURI != null) {
              /*check if a new record is needed
             by checking is the hour the same*/
             Calendar cal = Calendar.getInstance();
@@ -123,11 +121,10 @@ public class ScreenLogService extends Service {
             on record. Use get offset which doesn't include daylight saving time
             adjustments
              */
-            if(onTZ.getRawOffset() != tz.getRawOffset())
-            {
+            if (onTZ.getRawOffset() != tz.getRawOffset()) {
                 /*Delete the on record and return*/
 
-                this.getContentResolver().delete(onURI,null,null);
+                this.getContentResolver().delete(onURI, null, null);
 
                 onURI = null;
                 onHour = null;
@@ -139,30 +136,24 @@ public class ScreenLogService extends Service {
 
             }
 
-            if(onHour.equals(hour) && onDate.equals(date))
-            {
+            if (onHour.equals(hour) && onDate.equals(date)) {
                 /* In this case we just need to update the off time*/
-                logOff(cal.getTimeInMillis(),onURI);
-                onURI=null;
+                logOff(cal.getTimeInMillis(), onURI);
+                onURI = null;
                 onHour = null;
                 onTime = null;
                 Log.i(LOGCAT_ID, "Straight forward off record finished.");
-            }
-            else
-            {
+            } else {
                 /*In this case we need to close off the existing record
                 and then create a new on record and call offLogic again
                  */
                 dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
                 /* Use cal to hold the new off time - use hour and date of the
                   the record we are about to close to figure out its end time  */
-                try
-                {
+                try {
                     cal.setTime(dateFormat.parse(onDate + " " + onHour));
-                }
-                catch(Exception e)
-                {
-                    Log.e(this.LOGCAT_ID,e.getMessage());
+                } catch (Exception e) {
+                    Log.e(this.LOGCAT_ID, e.getMessage());
                 }
                 /*we want the end time in cal, so we add an hour*/
                 cal.add(Calendar.HOUR_OF_DAY, 1);
@@ -173,7 +164,7 @@ public class ScreenLogService extends Service {
                 hour = String.valueOf(cal.get(Calendar.HOUR_OF_DAY));
                 dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 date = dateFormat.format(cal.getTime());
-                logOn(cal.getTimeInMillis(),date,hour,onTZ);
+                logOn(cal.getTimeInMillis(), date, hour, onTZ);
                 Log.i(LOGCAT_ID, "Complex off record finished.");
                 /*Now start again - Recursive*/
                 offLogic(milliTime);
@@ -183,43 +174,38 @@ public class ScreenLogService extends Service {
         }
 
 
-
     }
 
     @Override
-	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public IBinder onBind(Intent intent) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 
-
-
-	@Override
-	public void onCreate()
-	{
-		super.onCreate();
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
         mBuilder = new NotificationCompat.Builder(this).setVisibility(Notification.VISIBILITY_SECRET)
-                                                        .setSmallIcon(R.drawable.piccolo);
+                .setSmallIcon(R.drawable.piccolo);
 
 
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         mAlarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 
-		Log.i("ScreenLog Service", "Created");
-		final IntentFilter intentFilter = new IntentFilter();
-		intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-		intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+        Log.i("ScreenLog Service", "Created");
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
         intentFilter.addAction(actionUpdateNotification);
         rec = new BroadcastReceiver() {
 
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                if (intent.getAction()== Intent.ACTION_SCREEN_ON)
-                {
+                if (intent.getAction() == Intent.ACTION_SCREEN_ON) {
 
                     /*The screen has just been turned on so we create a record
                     for it and leave the off field blank*/
@@ -231,102 +217,120 @@ public class ScreenLogService extends Service {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                     String date = dateFormat.format(cal.getTime());
                     TimeZone tz = cal.getTimeZone();
-                    logOn(milliTime,date,hour,tz);
+                    logOn(milliTime, date, hour, tz);
 
                 }
 
-            	if (intent.getAction()== Intent.ACTION_SCREEN_OFF)
-                {
+                if (intent.getAction() == Intent.ACTION_SCREEN_OFF) {
                     /*we may need to split it into two records */
                     Calendar cal = Calendar.getInstance();
                     long milliTime = cal.getTimeInMillis();
                     offLogic(milliTime);
                 }
 
-                if (intent.getAction() == actionUpdateNotification)
-                {
+                if (intent.getAction() == actionUpdateNotification) {
                     updateNotification();
 
                 }
 
+                if (intent.getAction() == actionDisplayNotification) {
+                    displayNotification();
+
+                }
+
             }
-           
-       
-           
+
+
         };
         // Registers the receiver so that your service will listen for
         // broadcasts
         this.registerReceiver(rec, intentFilter);
-        
 
-		
-	}
 
-    private void updateNotification()
-    {
-        Notification n = getNotification();
-        n.flags |= Notification.FLAG_NO_CLEAR;
-        startForeground(notifID,n);
     }
 
-    private Notification getNotification()
-    {
+    private void updateNotification() {
+        Notification n = getNotification();
+        n.flags |= Notification.FLAG_NO_CLEAR;
+        startForeground(notifID, n);
+    }
+
+
+    private void displayNotification() {
+        Notification n = getNotification();
+        mNotificationManager.notify(notifID,n);
+    }
+
+    private Notification getNotification() {
 
         Statistics stats = new Statistics(this.getApplicationContext());
         Visualisation vis = new Visualisation(this.getApplicationContext());
         Bitmap b = vis.DailyGraph(stats.getDailyProfile(new Date()));
         /*RemoteViews*/
         RemoteViews rv = new RemoteViews(this.getPackageName(), R.layout.screenlog_persistent_notification);
-        rv.setImageViewBitmap(R.id.ivGraph,b);
+        rv.setImageViewBitmap(R.id.ivGraph, b);
         mBuilder.setContent(rv);
         Log.i("ScreenLog Service", "Notification Built.");
-        return(mBuilder.build());
-
+        return (mBuilder.build());
 
 
     }
-	
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-	   
-		
-/*		NotificationCompat.Builder mBuilder =
-		        new NotificationCompat.Builder(this)
-		        .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher))
-		        .setContentTitle("Remedy")
-		        .setSmallIcon(R.drawable.ic_launcher)
-		        .setContentText("Screen logging is turned on.");
-			Notification n = mBuilder.build();
-			n.flags|= Notification.FLAG_NO_CLEAR;*/
 
-        Notification n = getNotification();
-        n.flags |= Notification.FLAG_NO_CLEAR;
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean foreground = sharedPref.getBoolean(getString(R.string.pref_foreground_service_key), false);
+
+        if (foreground) {
+            Notification n = getNotification();
+            n.flags |= Notification.FLAG_NO_CLEAR;
+
+            try {
+                Log.i("ScreenLog Service", "Attempting to put service into foreground.");
+                startForeground(notifID, n);
+
+            } catch (Exception e) {
+                Log.e("ScreenLog Service", e.toString());
+            }
+
+            //Need to set up an alarm to update the notification every 10 minutes
+
+            Intent i = new Intent(actionUpdateNotification);
+            mPendingIntent = PendingIntent.getBroadcast(this, notifID, i, PendingIntent.FLAG_CANCEL_CURRENT);
+            Calendar cal = Calendar.getInstance();
+            mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), iNotificationUpdateSeconds * 1000, mPendingIntent);
+
+            // We want this service to continue running until it is explicitly
+            // stopped, so return sticky.
 
 
-        try
-       {
-    	   Log.i("ScreenLog Service", "Attempting to put service into foreground.");
-        startForeground(notifID,n);
-        
-       }
-       catch(Exception e)
-       {
-    	   Log.e("ScreenLog Service", e.toString());
-       }
 
-		//Need to set up an alarm to update the notification every 10 minutes
 
-        Intent i = new Intent(actionUpdateNotification);
-        mPendingIntent = PendingIntent.getBroadcast(this,notifID,i,PendingIntent.FLAG_CANCEL_CURRENT);
-        Calendar cal =Calendar.getInstance();
-        mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP,cal.getTimeInMillis() ,iNotificationUpdateSeconds*1000,mPendingIntent);
+        }
+        else
+        {
+            //Get the time specified in settings to display the notification
+            String sNotifTime = sharedPref.getString(getString(R.string.pref_notification_schedule_key), "20:00");
+            /*Get the hour and minute and set calendar time. If the time has passed on this day
+            *then the notif should appear immediately
+            */
+            int hour = Integer.getInteger(sNotifTime.substring(1,2));
+            int min = Integer.getInteger(sNotifTime.substring(4,5));
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.MILLISECOND,0);
+            cal.set(Calendar.HOUR_OF_DAY,hour);
+            cal.set(Calendar.MINUTE,min);
 
-	    // We want this service to continue running until it is explicitly
-	    // stopped, so return sticky.
+            Intent i = new Intent(actionDisplayNotification);
+            mPendingIntent = PendingIntent.getBroadcast(this, notifID, i, PendingIntent.FLAG_CANCEL_CURRENT);
+            mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), iSecondsPerDay * 1000, mPendingIntent);
 
-       
-	    return START_STICKY;
-	}
+        }
+
+        return START_STICKY;
+
+    }
 
 
 	

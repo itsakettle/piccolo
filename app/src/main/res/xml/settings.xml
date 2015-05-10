@@ -4,7 +4,7 @@
 
 
         <CheckBoxPreference
-            android:key="pref_key_foreground_service"
+            android:key="@string/pref_foreground_service_key"
             android:disableDependentsState="true"
             android:title="@string/pref_foreground_service_title"
             android:summary="@string/pref_foreground_service_summary" />
@@ -22,8 +22,8 @@
             android:defaultValue="@string/pref_notification_content_default" />
 
         <ie.itsakettle.piccolo.Settings.SettingsTimeDialog
-            android:dependency="pref_key_foreground_service"
-            android:key="pref_key_notification_schedule"
+            android:dependency="@string/pref_foreground_service_key"
+            android:key="@string/pref_notification_schedule_key"
             android:title="@string/pref_notification_schedule_title"
             android:dialogTitle="@string/pref_notification_schedule_title"
             android:dialogMessage="@string/pref_notification_schedule_message"
