@@ -50,4 +50,5 @@
     <string name ="pref_notification_schedule_title">Notification Time</string>
     <string name = "pref_notification_schedule_message"> What time would you like Piccolo to notify you at?</string>
     <string name="pref_notification_schedule_key">pref_notification_schedule_key</string>
+    <string name="pref_notification_type_key">pref_notification_type_key</string>
 </resources>

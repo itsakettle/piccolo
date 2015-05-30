@@ -200,6 +200,7 @@ public class ScreenLogService extends Service {
         intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
         intentFilter.addAction(Intent.ACTION_SCREEN_ON);
         intentFilter.addAction(actionUpdateNotification);
+        intentFilter.addAction(actionDisplayNotification);
         rec = new BroadcastReceiver() {
 
             @Override
@@ -234,7 +235,8 @@ public class ScreenLogService extends Service {
                 }
 
                 if (intent.getAction() == actionDisplayNotification) {
-                    displayNotification();
+                    Log.i("ScreenLog Service", "Display Notification Action Received.");
+                   displayNotification();
 
                 }
 
@@ -257,6 +259,7 @@ public class ScreenLogService extends Service {
 
 
     private void displayNotification() {
+        Log.i("ScreenLog Service", "Attempting to display notification.");
         Notification n = getNotification();
         mNotificationManager.notify(notifID,n);
     }
@@ -315,10 +318,16 @@ public class ScreenLogService extends Service {
             /*Get the hour and minute and set calendar time. If the time has passed on this day
             *then the notif should appear immediately
             */
-            int hour = Integer.getInteger(sNotifTime.substring(1,2));
-            int min = Integer.getInteger(sNotifTime.substring(4,5));
+
+            String sHour = sNotifTime.substring(0, 2);
+            String sMin =  sNotifTime.substring(3, 5);
+
+            int hour = Integer.parseInt(sHour);
+            int min = Integer.parseInt(sMin);
+
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.MILLISECOND,0);
+            cal.set(Calendar.SECOND,0);
             cal.set(Calendar.HOUR_OF_DAY,hour);
             cal.set(Calendar.MINUTE,min);
 
@@ -326,6 +335,7 @@ public class ScreenLogService extends Service {
             mPendingIntent = PendingIntent.getBroadcast(this, notifID, i, PendingIntent.FLAG_CANCEL_CURRENT);
             mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), iSecondsPerDay * 1000, mPendingIntent);
 
+            Log.i("ScreenLog Service", "Service started in background. Notification at " + cal.getTime().toString());
         }
 
         return START_STICKY;

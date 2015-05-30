@@ -62,10 +62,23 @@ public class SettingsTimeDialog extends DialogPreference{
             prevHour=timepicker.getCurrentHour();
             prevMinute=timepicker.getCurrentMinute();
 
-            String time=String.valueOf(prevHour)+":"+String.valueOf(prevMinute);
+            String sMin = String.valueOf(prevMinute);
+            String sHour = String.valueOf(prevHour);
+            String sTime;
 
-            if (callChangeListener(time)) {
-                persistString(time);
+
+            if(sMin.length() == 1) {
+                sMin = 0 + sMin;
+            }
+
+            if(sHour.length() == 1) {
+                sHour = 0 + sHour;
+            }
+
+            sTime = sHour + ":" + sMin;
+
+            if (callChangeListener(sTime)) {
+                persistString(sTime);
             }
         }
     }

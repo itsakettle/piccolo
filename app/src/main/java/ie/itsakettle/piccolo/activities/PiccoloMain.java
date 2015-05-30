@@ -14,7 +14,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -135,22 +134,6 @@ public class PiccoloMain extends Activity
         return super.onCreateOptionsMenu(menu);
     }
 
-    /*
-    I got this solution from http://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android
-     There is no consensus on this, so I'm going with this for now...the alternative is a shared pref like before or
-     a static flag in the service class..but these don't help if the service is destroyed as onDestroy isn't
-     guaranteed to be called.....I think.
-     */
-
-    private boolean isServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
     public boolean onPrepareOptionsMenu (Menu menu)
@@ -159,7 +142,7 @@ public class PiccoloMain extends Activity
 
             //Check if the screen log service is running.
 
-            if ( isServiceRunning(ie.itsakettle.piccolo.services.ScreenLogService.class)  ) {
+            if ( isServiceRunning(ie.itsakettle.piccolo.services.ScreenLogService.class,this)  ) {
                 menu.findItem(R.id.ScreenLogMenuItem).setTitle("Turn screen log off");
             } else {
                 menu.findItem(R.id.ScreenLogMenuItem).setTitle("Turn screen log on");
@@ -176,7 +159,7 @@ public class PiccoloMain extends Activity
     {
         if(item.getItemId()== R.id.ScreenLogMenuItem)
         {
-            activateScreenLog();
+            toggleScreenLog();
 
         }
         else if(item.getItemId() == R.id.DatabaseExportMenuItem)
@@ -233,9 +216,9 @@ public class PiccoloMain extends Activity
     }
 
 
-    private boolean activateScreenLog()
+    public boolean toggleScreenLog()
     {
-        boolean screenLogActive = isServiceRunning(ie.itsakettle.piccolo.services.ScreenLogService.class);
+        boolean screenLogActive = isServiceRunning(ie.itsakettle.piccolo.services.ScreenLogService.class,this);
         if(!screenLogActive )
         {
             Intent i = new Intent(this,ScreenLogService.class);
@@ -293,5 +276,23 @@ public class PiccoloMain extends Activity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
+
+    /*
+    I got this solution from http://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android
+     There is no consensus on this, so I'm going with this for now...the alternative is a shared pref like before or
+     a static flag in the service class..but these don't help if the service is destroyed as onDestroy isn't
+     guaranteed to be called.....I think.
+     */
+
+    public static boolean isServiceRunning(Class<?> serviceClass, Context context) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }

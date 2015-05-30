@@ -14,7 +14,7 @@
         android:key = "pref_key_notifications_group" >
 
         <ListPreference
-            android:key="pref_key_notification_type"
+            android:key="@string/pref_notification_type_key"
             android:title="@string/pref_notification_content_title"
             android:dialogTitle="@string/pref_notification_content_dialog_title"
             android:entries="@array/pref_notifications_content_entries"
